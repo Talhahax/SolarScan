@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">SolarScan</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="scanner">Scanner</string>
+    <string name="solar_details">Solar</string>
+    <string name="scan_bill">Scan Bill</string>
+    <string name="view_recommendation">View Solar Recommendation</string>
+    <string name="no_bills">No bills scanned yet\nTap the scan button to get started</string>
+</resources>

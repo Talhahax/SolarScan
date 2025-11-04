@@ -1,0 +1,9 @@
+package com.talha.solarscan.data.local
+
+data class Bill(
+    val id: Long = 0,
+    val units: Int,
+    val cost: Int,
+    val billingDate: String,
+    val createdAt: Long = System.currentTimeMillis()
+)
