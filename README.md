@@ -8,6 +8,7 @@ SolarScan is an Android app that scans or uploads electricity bills, extracts ke
 
 Key Features
 
+- Splash screen with Material Design 3 theming (Android 12+)
 - Scan, upload, or enter bill data manually (tabbed scanner workflow)
 - On‑device OCR (Google ML Kit Text Recognition)
 - Robust bill text parsing for units, total cost, and billing date
@@ -15,12 +16,17 @@ Key Features
 - Local SQLite storage of bills and recommendations
 - Dashboard with bill history and quick navigation to details
 - Detailed recommendation view (system size, monthly production, savings, payback, CO₂ reduction, notes)
+- Material Design 3 UI with light and dark theme support
+- Custom Poppins font family (Regular, Medium, Semibold)
+- Enhanced navigation with auto-hiding bottom navigation on detail screens
 
 Tech Stack
 
 - Language: Kotlin (JVM target 11)
 - Min/Target/Compile SDK: minSdk 24, targetSdk 36, compileSdk 36
-- UI: AndroidX, Material, ViewPager2, Navigation Component, ConstraintLayout
+- UI: Material Design 3, AndroidX, ViewPager2, Navigation Component, ConstraintLayout
+- Design: Material Design 3 theming with light/dark mode, custom Poppins fonts
+- Splash Screen: AndroidX Core SplashScreen API
 - Camera & OCR: CameraX, Google ML Kit Text Recognition
 - Networking: Retrofit2, OkHttp (with logging), Gson
 - Concurrency: Kotlin Coroutines, AndroidX Lifecycle/ViewModel
@@ -30,19 +36,22 @@ Architecture
 
 - UI: `Fragments` (`DashboardFragment`, `ScannerFragment`, `DetailsFragment`) hosted in `MainActivity`
 - State: `ViewModel` (`SolarViewModel`, `BillViewModel`) with LiveData for loading/error/navigation events
+- Navigation: Bottom navigation with automatic hiding on detail screens, item reselection handling
 - Data:
   - Remote: `ApiClient` + `ApiService` (`POST /api/analyze-bill`)
   - Local: `DatabaseHelper` (bills and recommendations tables)
   - Parsing: `BillParser` (regex‑based field extraction)
 - Repository: `SolarRepository` orchestrates network calls and wraps results
+- Theme: Material Design 3 with dynamic color system, light and dark mode support
 
 User Flow
 
-1) Scan/Upload/Manual: Capture bill text with CameraX + ML Kit, upload an image, or paste text.
-2) Parse: Extract units, total cost, and billing date with `BillParser`.
-3) Analyze: Send text (and optional budget) to backend (`/api/analyze-bill`).
-4) Persist: Save bill and returned recommendation locally.
-5) Review: Browse bills on Dashboard; open Details for system sizing, savings, and insights.
+1) Launch: App displays splash screen with branded logo and animations.
+2) Scan/Upload/Manual: Capture bill text with CameraX + ML Kit, upload an image, or paste text.
+3) Parse: Extract units, total cost, and billing date with `BillParser`.
+4) Analyze: Send text (and optional budget) to backend (`/api/analyze-bill`).
+5) Persist: Save bill and returned recommendation locally.
+6) Review: Browse bills on Dashboard; open Details for system sizing, savings, and insights.
 
 Project Structure
 
@@ -90,8 +99,10 @@ Getting Started
 Configuration
 
 - API Base URL: edit `ApiClient.BASE_URL` if your backend endpoint differs.
+- Splash Screen: Configured in `themes.xml` with Material Design 3 colors and logo drawable.
 - Logging: OkHttp logging interceptor is enabled (BODY). Adjust for release as needed.
 - ProGuard: see `app/proguard-rules.pro` for release configurations.
+- Themes: Material Design 3 colors defined in `colors.xml` with light and dark variants.
 
 Testing
 
@@ -101,12 +112,16 @@ Testing
 Security & Privacy
 
 - OCR and parsing happen on device; analysis requests send extracted text (and optional budget) to the configured backend.
+- Permissions: Camera, Internet, READ_MEDIA_IMAGES (Android 13+), READ_EXTERNAL_STORAGE (legacy).
 - Do not include sensitive PII in bills. Review and harden logging before production (disable BODY logs).
 
 Build Notes
 
 - Kotlin JVM target 11; ensure Gradle and Android Gradle Plugin match the included `gradle/wrapper` and `libs.versions.toml`.
 - CameraX and ML Kit require camera permission and a real device for best results.
+- Splash Screen: Requires AndroidX Core SplashScreen library (included in dependencies).
+- Fonts: Custom Poppins fonts are bundled in `res/font/` directory.
+- Material Design 3: Full MD3 color system and theming configured for light and dark modes.
 
 License
 
