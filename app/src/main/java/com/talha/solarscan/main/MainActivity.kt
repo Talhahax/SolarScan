@@ -1,6 +1,7 @@
 package com.talha.solarscan.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -9,6 +10,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.talha.solarscan.R
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var navController: NavController
+    private lateinit var bottomNav: BottomNavigationView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -21,12 +26,47 @@ class MainActivity : AppCompatActivity() {
             .findFragmentById(R.id.navHostFragment) as? NavHostFragment
 
         navHostFragment?.let {
-            val navController = it.navController
-            val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
+            navController = it.navController
+            bottomNav = findViewById(R.id.bottomNav)
+
+            // Setup bottom nav with nav controller
             bottomNav.setupWithNavController(navController)
+
+            // CRITICAL FIX: Handle item reselection
+            // When user clicks the already-selected tab, pop back to that destination
+            bottomNav.setOnItemReselectedListener { item ->
+                Log.d("MainActivity", "Bottom nav item reselected: ${item.title}")
+                when (item.itemId) {
+                    R.id.dashboardFragment -> {
+                        // Pop everything back to dashboard
+                        navController.popBackStack(R.id.dashboardFragment, false)
+                    }
+                    R.id.scannerFragment -> {
+                        // Pop everything back to scanner
+                        navController.popBackStack(R.id.scannerFragment, false)
+                    }
+                }
+            }
+
+            // Optional: Hide bottom nav on detail screens for cleaner UI
+            navController.addOnDestinationChangedListener { _, destination, _ ->
+                Log.d("MainActivity", "Navigated to: ${destination.label}")
+                when (destination.id) {
+                    R.id.detailsFragment -> {
+                        bottomNav.visibility = android.view.View.GONE
+                    }
+                    R.id.dashboardFragment, R.id.scannerFragment -> {
+                        bottomNav.visibility = android.view.View.VISIBLE
+                    }
+                }
+            }
+
         } ?: run {
-            // Log error if navHostFragment is null
-            android.util.Log.e("MainActivity", "NavHostFragment is null!")
+            Log.e("MainActivity", "NavHostFragment is null!")
         }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 }

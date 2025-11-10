@@ -9,13 +9,24 @@
         android:id="@+id/dashboardFragment"
         android:name="com.talha.solarscan.fragments.DashboardFragment"
         android:label="Dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_dashboard">
+
+        <!-- Add action to navigate to details from dashboard -->
+        <action
+            android:id="@+id/action_dashboard_to_details"
+            app:destination="@id/detailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 
     <fragment
         android:id="@+id/scannerFragment"
         android:name="com.talha.solarscan.fragments.scanner.ScannerFragment"
         android:label="Scanner"
         tools:layout="@layout/fragment_scanner">
+
         <action
             android:id="@+id/action_scanner_to_details"
             app:destination="@id/detailsFragment"
@@ -23,13 +34,19 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
-
     </fragment>
 
     <fragment
         android:id="@+id/detailsFragment"
         android:name="com.talha.solarscan.fragments.DetailsFragment"
         android:label="Details"
-        tools:layout="@layout/fragment_details" />
+        tools:layout="@layout/fragment_details">
+
+        <!-- Optional: Add argument for bill_id -->
+        <argument
+            android:name="bill_id"
+            android:defaultValue="-1L"
+            app:argType="long" />
+    </fragment>
 
 </navigation>

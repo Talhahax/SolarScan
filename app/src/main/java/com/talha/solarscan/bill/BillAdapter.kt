@@ -1,26 +1,65 @@
-package com.talha.solarscan.adapters
+package com.talha.solarscan.bill
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.card.MaterialCardView
 import com.talha.solarscan.R
-import com.talha.solarscan.bill.Bill
+import java.text.SimpleDateFormat
+import java.util.*
 
 class BillAdapter(
     private var bills: List<Bill>,
-    private val onViewDetailsClick: (Bill) -> Unit
+    private val onBillClick: (Bill) -> Unit,
+    private val hasRecommendation: (Long) -> Boolean
 ) : RecyclerView.Adapter<BillAdapter.BillViewHolder>() {
 
-    inner class BillViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val card: MaterialCardView = view.findViewById(R.id.card_bill)
-        val textUnits: TextView = view.findViewById(R.id.text_units)
-        val textCost: TextView = view.findViewById(R.id.text_cost)
-        val textDate: TextView = view.findViewById(R.id.text_date)
-        val buttonViewDetails: MaterialButton = view.findViewById(R.id.button_view_details)
+    inner class BillViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val textUnits: TextView = itemView.findViewById(R.id.text_units)
+        private val textCost: TextView = itemView.findViewById(R.id.text_cost)
+        private val textDate: TextView = itemView.findViewById(R.id.text_date)
+        private val btnShowRecommendations: Button = itemView.findViewById(R.id.button_view_details)
+
+        fun bind(bill: Bill) {
+            textUnits.text = "${bill.units} kWh"
+            textCost.text = "Rs. ${formatNumber(bill.cost)}"
+
+            // Format date
+            val dateText = if (bill.billingDate.isNullOrEmpty()) {
+                formatTimestamp(bill.createdAt)
+            } else {
+                bill.billingDate
+            }
+            textDate.text = dateText
+
+            // Show button only if recommendation exists
+            if (hasRecommendation(bill.id)) {
+                btnShowRecommendations.visibility = View.VISIBLE
+                btnShowRecommendations.setOnClickListener {
+                    onBillClick(bill)
+                }
+            } else {
+                btnShowRecommendations.visibility = View.GONE
+            }
+
+            // Optional: Make entire card clickable if recommendation exists
+            itemView.setOnClickListener {
+                if (hasRecommendation(bill.id)) {
+                    onBillClick(bill)
+                }
+            }
+        }
+
+        private fun formatNumber(number: Int): String {
+            return String.format("%,d", number)
+        }
+
+        private fun formatTimestamp(timestamp: Long): String {
+            val sdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+            return sdf.format(Date(timestamp))
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BillViewHolder {
@@ -30,25 +69,13 @@ class BillAdapter(
     }
 
     override fun onBindViewHolder(holder: BillViewHolder, position: Int) {
-        val bill = bills[position]
-
-        holder.textUnits.text = "${bill.units} units"
-        holder.textCost.text = "Rs. ${formatNumber(bill.cost)}"
-        holder.textDate.text = bill.billingDate
-
-        holder.buttonViewDetails.setOnClickListener {
-            onViewDetailsClick(bill)
-        }
+        holder.bind(bills[position])
     }
 
-    override fun getItemCount(): Int = bills.size
+    override fun getItemCount() = bills.size
 
     fun updateBills(newBills: List<Bill>) {
         bills = newBills
         notifyDataSetChanged()
-    }
-
-    private fun formatNumber(number: Int): String {
-        return String.format("%,d", number)
     }
 }

@@ -1,24 +1,25 @@
 package com.talha.solarscan.viewmodel
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.talha.solarscan.data.remote.AnalyzeBillResponse
+import com.talha.solarscan.data.local.DatabaseHelper
+import com.talha.solarscan.data.local.SolarRecommendation
 import com.talha.solarscan.repository.SolarRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class SolarViewModel : ViewModel() {
+class SolarViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = SolarRepository()
+    private val dbHelper = DatabaseHelper.getInstance(application)
 
-    // Data LiveData - persists for DetailsFragment to display
-    private val _recommendationLiveData = MutableLiveData<AnalyzeBillResponse?>()
-    val recommendationLiveData: LiveData<AnalyzeBillResponse?> = _recommendationLiveData
-
-    // Event LiveData - single-use for navigation
-    private val _navigationEvent = MutableLiveData<Event<AnalyzeBillResponse>>()
-    val navigationEvent: LiveData<Event<AnalyzeBillResponse>> = _navigationEvent
+    // Event LiveData - ONLY for navigation (single-use)
+    private val _navigationEvent = MutableLiveData<Event<Long>>() // Now contains bill ID
+    val navigationEvent: LiveData<Event<Long>> = _navigationEvent
 
     private val _loadingLiveData = MutableLiveData<Boolean>()
     val loadingLiveData: LiveData<Boolean> = _loadingLiveData
@@ -33,15 +34,42 @@ class SolarViewModel : ViewModel() {
             val result = repository.fetchRecommendation(billText, budget)
 
             result.onSuccess { response ->
-                // Store the data (for DetailsFragment)
-                _recommendationLiveData.postValue(response)
-                // Trigger navigation event (for ScannerFragment)
-                _navigationEvent.postValue(Event(response))
+                // Save to database
+                val billId = withContext(Dispatchers.IO) {
+                    // Insert bill
+                    val bill = com.talha.solarscan.bill.Bill(
+                        id = 0,
+                        units = response.parsedFields.unitsKWh ?: 0,
+                        cost = response.parsedFields.totalCost ?: 0,
+                        billingDate = response.parsedFields.billingDate,
+                        createdAt = System.currentTimeMillis()
+                    )
+                    val insertedBillId = dbHelper.insertBill(bill)
+
+                    // Insert recommendation
+                    val recommendation = SolarRecommendation(
+                        suggestedSystemKw = response.recommendation.suggestedSystemKw,
+                        estMonthlyProductionKwh = response.recommendation.estMonthlyProductionKwh,
+                        estMonthlySavings = response.recommendation.estMonthlySavings,
+                        approxInstallCost = response.recommendation.approxInstallCost,
+                        paybackYears = response.recommendation.paybackYears,
+                        co2ReductionTonsPerYear = response.recommendation.co2ReductionTonsPerYear,
+                        percentOffset = response.recommendation.percentOffset,
+                        notes = response.recommendation.notes,
+                        assumptions = response.assumptions,
+                        unitsKWh = response.parsedFields.unitsKWh ?: 0
+                    )
+                    dbHelper.insertRecommendation(insertedBillId, recommendation)
+
+                    insertedBillId
+                }
+
+                // Trigger navigation with bill ID
+                _navigationEvent.postValue(Event(billId))
                 _errorLiveData.postValue(null)
             }
 
             result.onFailure { exception ->
-                _recommendationLiveData.postValue(null)
                 _errorLiveData.postValue(exception.message ?: "Unknown error")
             }
 
@@ -49,9 +77,9 @@ class SolarViewModel : ViewModel() {
         }
     }
 
-    // Clear recommendation when starting fresh scan
-    fun clearRecommendation() {
-        _recommendationLiveData.value = null
+    // Helper method to check if a bill has recommendations
+    fun hasRecommendation(billId: Long): Boolean {
+        return dbHelper.hasRecommendation(billId)
     }
 }
 

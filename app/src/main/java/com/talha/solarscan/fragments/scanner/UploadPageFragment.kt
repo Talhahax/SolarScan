@@ -20,21 +20,16 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.talha.solarscan.R
-import com.talha.solarscan.bill.Bill
-import com.talha.solarscan.bill.BillParser
-import com.talha.solarscan.bill.BillViewModel
 import com.talha.solarscan.viewmodel.SolarViewModel
 
 class UploadPageFragment : Fragment() {
 
-    private val billViewModel: BillViewModel by activityViewModels()
     private val solarViewModel: SolarViewModel by activityViewModels()
 
     private lateinit var buttonChooseFile: MaterialButton
     private lateinit var buttonProcess: MaterialButton
     private lateinit var imagePreview: ImageView
     private lateinit var progressBar: ProgressBar
-
     private lateinit var progressText: TextView
 
     private var selectedImageUri: Uri? = null
@@ -74,13 +69,7 @@ class UploadPageFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        solarViewModel.recommendationLiveData.observe(viewLifecycleOwner) { response ->
-            if (response != null && response.success) {
-                showLoading(false)
-                Toast.makeText(context, "✅ Analysis complete!", Toast.LENGTH_SHORT).show()
-            }
-        }
-
+        // Only observe errors - loading is handled manually, navigation by parent
         solarViewModel.errorLiveData.observe(viewLifecycleOwner) { error ->
             if (error != null) {
                 showLoading(false)
@@ -120,7 +109,6 @@ class UploadPageFragment : Fragment() {
                     val extractedText = visionText.text
 
                     if (extractedText.isNotBlank()) {
-                        parseBillAndSave(extractedText)
                         fetchSolarRecommendation(extractedText)
                     } else {
                         showLoading(false)
@@ -142,34 +130,6 @@ class UploadPageFragment : Fragment() {
         } catch (e: Exception) {
             showLoading(false)
             Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun parseBillAndSave(text: String) {
-        Log.d("UploadPageFragment", "========== PARSE AND SAVE ==========")
-        val parsed = BillParser.parse(text)
-
-        Log.d("UploadPageFragment", "Parsed units: ${parsed.units}")
-        Log.d("UploadPageFragment", "Parsed cost: ${parsed.cost}")
-        Log.d("UploadPageFragment", "Parsed date: ${parsed.billingDate}")
-
-        if (parsed.units != null && parsed.cost != null) {
-            val bill = Bill(
-                units = parsed.units,
-                cost = parsed.cost,
-                billingDate = parsed.billingDate ?: "Unknown"
-            )
-            Log.d("UploadPageFragment", "✅ Creating bill object: $bill")
-            Log.d("UploadPageFragment", "Calling billViewModel.saveBill()...")
-            billViewModel.saveBill(bill)
-            Log.d("UploadPageFragment", "saveBill() called successfully")
-        } else {
-            Log.e("UploadPageFragment", "❌ FAILED TO PARSE: units=${parsed.units}, cost=${parsed.cost}")
-            Toast.makeText(
-                context,
-                "Could not extract bill data. Units: ${parsed.units}, Cost: ${parsed.cost}",
-                Toast.LENGTH_LONG
-            ).show()
         }
     }
 

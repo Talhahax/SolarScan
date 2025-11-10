@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.talha.solarscan.R
 import com.talha.solarscan.viewmodel.SolarViewModel
@@ -54,14 +54,13 @@ class ScannerFragment : Fragment() {
 
     private fun observeNavigation() {
         // Observe the navigation EVENT (single-use)
-        solarViewModel.navigationEvent.observe(viewLifecycleOwner, Observer { event ->
-            // getContentIfNotHandled() returns null if already handled
-            event.getContentIfNotHandled()?.let { response ->
-                if (response.success) {
-                    // Navigate to the details fragment using the action
-                    findNavController().navigate(R.id.action_scanner_to_details)
-                }
+        // Now receives bill ID instead of response
+        solarViewModel.navigationEvent.observe(viewLifecycleOwner) { event ->
+            event.getContentIfNotHandled()?.let { billId ->
+                // Navigate to the details fragment with bill ID
+                val bundle = bundleOf("bill_id" to billId)
+                findNavController().navigate(R.id.action_scanner_to_details, bundle)
             }
-        })
+        }
     }
 }

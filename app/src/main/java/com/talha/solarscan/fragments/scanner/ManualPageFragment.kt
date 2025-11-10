@@ -11,15 +11,12 @@ import androidx.fragment.app.activityViewModels
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.talha.solarscan.R
-import com.talha.solarscan.bill.Bill
-import com.talha.solarscan.bill.BillViewModel
 import com.talha.solarscan.viewmodel.SolarViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ManualPageFragment : Fragment() {
 
-    private val billViewModel: BillViewModel by activityViewModels()
     private val solarViewModel: SolarViewModel by activityViewModels()
 
     private lateinit var editUnits: TextInputEditText
@@ -53,16 +50,13 @@ class ManualPageFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        solarViewModel.recommendationLiveData.observe(viewLifecycleOwner) { response ->
-            if (response != null && response.success) {
-                showLoading(false)
-                Toast.makeText(context, "Analysis complete!", Toast.LENGTH_SHORT).show()
-            }
+        // Only observe loading and errors - navigation is handled by parent ScannerFragment
+        solarViewModel.loadingLiveData.observe(viewLifecycleOwner) { isLoading ->
+            showLoading(isLoading)
         }
 
         solarViewModel.errorLiveData.observe(viewLifecycleOwner) { error ->
             if (error != null) {
-                showLoading(false)
                 Toast.makeText(context, "Error: $error", Toast.LENGTH_LONG).show()
             }
         }
@@ -97,8 +91,6 @@ class ManualPageFragment : Fragment() {
             return
         }
 
-        saveBill(units, cost)
-
         val billText = """
             Units Consumed: $units kWh
             Total Amount: Rs. $cost
@@ -108,17 +100,7 @@ class ManualPageFragment : Fragment() {
         fetchSolarRecommendation(billText, budget)
     }
 
-    private fun saveBill(units: Int, cost: Int) {
-        val bill = Bill(
-            units = units,
-            cost = cost,
-            billingDate = getCurrentDate()
-        )
-        billViewModel.saveBill(bill)
-    }
-
     private fun fetchSolarRecommendation(billText: String, budget: Int?) {
-        showLoading(true)
         solarViewModel.fetchRecommendation(billText, budget)
     }
 

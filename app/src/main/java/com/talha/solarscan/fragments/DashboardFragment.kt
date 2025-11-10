@@ -6,14 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.talha.solarscan.R
-import com.talha.solarscan.adapters.BillAdapter
+import com.talha.solarscan.bill.BillAdapter
 import com.talha.solarscan.bill.Bill
 import com.talha.solarscan.bill.BillViewModel
 import com.talha.solarscan.viewmodel.SolarViewModel
@@ -45,19 +47,40 @@ class DashboardFragment : Fragment() {
         setupRecyclerView()
         setupObservers()
 
-        // Click listener for FAB
+        // FIXED: Simulate bottom nav click for consistent navigation
         fabScan.setOnClickListener {
-            findNavController().navigate(R.id.scannerFragment)
+            // Get the bottom navigation view from activity
+            val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottomNav)
+
+            // Programmatically select the scanner tab
+            // This ensures navigation behaves exactly like clicking the bottom nav
+            bottomNav?.selectedItemId = R.id.scannerFragment
+
+            Log.d("DashboardFragment", "FAB clicked - navigating to scanner via bottom nav")
         }
 
         // Load all bills
         billViewModel.loadAllBills()
     }
 
+    private fun onViewDetailsClick(bill: Bill) {
+        // Navigate to details fragment with bill ID
+        val bundle = bundleOf("bill_id" to bill.id)
+        findNavController().navigate(R.id.action_dashboard_to_details, bundle)
+        Log.d("DashboardFragment", "Navigating to details for bill ID: ${bill.id}")
+    }
+
     private fun setupRecyclerView() {
-        billAdapter = BillAdapter(emptyList()) { bill ->
-            onBillClick(bill)
-        }
+        billAdapter = BillAdapter(
+            bills = emptyList(),
+            onBillClick = { bill ->
+                onViewDetailsClick(bill)
+            },
+            hasRecommendation = { billId ->
+                // Check if recommendation exists in database
+                solarViewModel.hasRecommendation(billId)
+            }
+        )
 
         recyclerBills.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -72,7 +95,7 @@ class DashboardFragment : Fragment() {
             Log.d("DashboardFragment", "========== BILLS UPDATED ==========")
             Log.d("DashboardFragment", "Received ${bills.size} bills")
             bills.forEachIndexed { index, bill ->
-                Log.d("DashboardFragment", "Bill $index: units=${bill.units}, cost=${bill.cost}, date=${bill.billingDate}")
+                Log.d("DashboardFragment", "Bill $index: id=${bill.id}, units=${bill.units}, cost=${bill.cost}, date=${bill.billingDate}")
             }
 
             if (bills.isNotEmpty()) {
@@ -88,15 +111,9 @@ class DashboardFragment : Fragment() {
         }
     }
 
-    private fun onBillClick(bill: Bill) {
-        // Load the recommendation for this bill from the database/storage
-        // For now, we'll need to fetch it again or store it with the bill
-        // Navigate to details fragment
-        findNavController().navigate(R.id.detailsFragment)
-    }
-
     override fun onResume() {
         super.onResume()
+        Log.d("DashboardFragment", "onResume called - Refreshing bills")
         // Refresh bills when returning to dashboard
         billViewModel.loadAllBills()
     }

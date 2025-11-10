@@ -9,14 +9,15 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.talha.solarscan.R
-import com.talha.solarscan.data.remote.AnalyzeBillResponse
-import com.talha.solarscan.viewmodel.SolarViewModel
+import com.talha.solarscan.data.local.DatabaseHelper
+import com.talha.solarscan.data.local.SolarRecommendation
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DetailsFragment : Fragment() {
-
-    private val solarViewModel: SolarViewModel by activityViewModels()
 
     private lateinit var progressBar: ProgressBar
     private lateinit var layoutDetails: LinearLayout
@@ -26,11 +27,20 @@ class DetailsFragment : Fragment() {
     private lateinit var textMonthlySaving: TextView
     private lateinit var textPaybackPeriod: TextView
     private lateinit var textTips: TextView
-
-    // Additional fields for new API
     private lateinit var textMonthlyProduction: TextView
     private lateinit var textCO2Reduction: TextView
     private lateinit var textPercentOffset: TextView
+
+    private lateinit var dbHelper: DatabaseHelper
+    private var billId: Long = -1
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        dbHelper = DatabaseHelper.getInstance(requireContext())
+
+        // Get bill ID from arguments (passed from dashboard)
+        billId = arguments?.getLong("bill_id", -1) ?: -1
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,42 +61,61 @@ class DetailsFragment : Fragment() {
         textMonthlySaving = view.findViewById(R.id.text_monthly_saving)
         textPaybackPeriod = view.findViewById(R.id.text_payback_period)
         textTips = view.findViewById(R.id.text_tips)
-
-        // Initialize new TextViews
         textMonthlyProduction = view.findViewById(R.id.text_monthly_production)
         textCO2Reduction = view.findViewById(R.id.text_co2_reduction)
         textPercentOffset = view.findViewById(R.id.text_percent_offset)
 
-        setupObservers()
+        loadRecommendation()
     }
 
-    private fun setupObservers() {
-        solarViewModel.loadingLiveData.observe(viewLifecycleOwner) { isLoading ->
-            progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-            layoutDetails.visibility = if (isLoading) View.GONE else View.VISIBLE
-        }
+    private fun loadRecommendation() {
+        if (billId == -1L) {
+            // No bill ID provided, get the latest bill
+            lifecycleScope.launch {
+                val latestBill = withContext(Dispatchers.IO) {
+                    dbHelper.getLatestBill()
+                }
 
-        solarViewModel.recommendationLiveData.observe(viewLifecycleOwner) { response ->
-            if (response != null && response.success) {
-                displayRecommendation(response)
+                if (latestBill != null) {
+                    billId = latestBill.id
+                    fetchAndDisplayRecommendation(latestBill.units)
+                } else {
+                    Toast.makeText(context, "No bill found", Toast.LENGTH_SHORT).show()
+                    progressBar.visibility = View.GONE
+                }
             }
+        } else {
+            // Bill ID provided, fetch its recommendation
+            fetchAndDisplayRecommendation(0) // units will be fetched if needed
         }
+    }
 
-        solarViewModel.errorLiveData.observe(viewLifecycleOwner) { error ->
-            if (error != null) {
-                Toast.makeText(context, "Error: $error", Toast.LENGTH_LONG).show()
+    private fun fetchAndDisplayRecommendation(unitsKWh: Int) {
+        lifecycleScope.launch {
+            progressBar.visibility = View.VISIBLE
+            layoutDetails.visibility = View.GONE
+
+            val recommendation = withContext(Dispatchers.IO) {
+                dbHelper.getRecommendationForBill(billId)
+            }
+
+            progressBar.visibility = View.GONE
+            layoutDetails.visibility = View.VISIBLE
+
+            if (recommendation != null) {
+                displayRecommendation(recommendation, unitsKWh)
+            } else {
+                Toast.makeText(context, "No recommendation found for this bill", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun displayRecommendation(response: AnalyzeBillResponse) {
-        val rec = response.recommendation
-        val parsed = response.parsedFields
-
+    private fun displayRecommendation(rec: SolarRecommendation, unitsKWh: Int) {
         // Display category based on consumption
+        val units = if (unitsKWh > 0) unitsKWh else rec.unitsKWh
         val category = when {
-            (parsed.unitsKWh ?: 0) < 300 -> "Low Consumer ✅"
-            (parsed.unitsKWh ?: 0) < 600 -> "Average Consumer 📊"
+            units < 300 -> "Low Consumer ✅"
+            units < 600 -> "Average Consumer 📊"
             else -> "High Consumer ⚡"
         }
         textCategory.text = category
@@ -100,38 +129,30 @@ class DetailsFragment : Fragment() {
         textCO2Reduction.text = "${"%.1f".format(rec.co2ReductionTonsPerYear)} t"
         textPercentOffset.text = "${rec.percentOffset}%"
 
-
         // Tips and notes
         val allTips = mutableListOf<String>()
-        allTips.addAll(response.assumptions)
+        allTips.addAll(rec.assumptions)
         allTips.addAll(rec.notes)
 
-        val tipsText = allTips.joinToString(separator = "\n• ", prefix = "• ")
-        textTips.text = tipsText
-
-        // Show budget warning if needed
-        if (response.budgetRequest.needsBudget) {
-            Toast.makeText(
-                context,
-                response.budgetRequest.reason,
-                Toast.LENGTH_LONG
-            ).show()
+        val tipsText = if (allTips.isNotEmpty()) {
+            allTips.joinToString(separator = "\n• ", prefix = "• ")
+        } else {
+            "No additional notes"
         }
-
+        textTips.text = tipsText
     }
 
     private fun formatNumber(number: Int): String {
         return String.format("%,d", number)
     }
 
-    override fun onResume() {
-        super.onResume()
-        android.util.Log.d("DetailsFragment", "onResume called - Fragment is visible")
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        // Clear the recommendation data when leaving details screen
-        solarViewModel.clearRecommendation()
+    companion object {
+        fun newInstance(billId: Long): DetailsFragment {
+            return DetailsFragment().apply {
+                arguments = Bundle().apply {
+                    putLong("bill_id", billId)
+                }
+            }
+        }
     }
 }
