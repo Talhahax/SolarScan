@@ -123,8 +123,4 @@ Build Notes
 - Fonts: Custom Poppins fonts are bundled in `res/font/` directory.
 - Material Design 3: Full MD3 color system and theming configured for light and dark modes.
 
-License
-
-Copyright © The project authors. If you plan to open‑source, add a license here.
-
-
+Thank You For Your Time :)
