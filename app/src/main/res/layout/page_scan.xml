@@ -18,8 +18,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:background="#80000000"
         android:padding="12dp"
+        android:fontFamily="@font/poppins_regular"
         android:text="Align bill within frame"
         android:textColor="@android:color/white"
         android:textSize="16sp"
@@ -34,6 +34,7 @@
         android:layout_marginBottom="32dp"
         android:text="Capture Bill"
         android:textSize="16sp"
+        android:fontFamily="@font/poppins_regular"
         app:icon="@drawable/ic_camera"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -68,6 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Processing bill..."
+                android:fontFamily="@font/poppins_regular"
                 android:textColor="@android:color/white"
                 android:textSize="16sp" />
 

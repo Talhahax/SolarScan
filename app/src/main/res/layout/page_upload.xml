@@ -43,6 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="Upload Your Electricity Bill"
+                    android:fontFamily="@font/poppins_medium"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/color_text" />
@@ -52,6 +53,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="Drag and drop or click to browse"
+                    android:fontFamily="@font/poppins_regular"
                     android:textColor="@color/color_text_secondary"
                     android:textSize="14sp" />
 
@@ -60,6 +62,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="Supports JPG, PNG (max 10MB)"
+                    android:fontFamily="@font/poppins_regular"
                     android:textColor="@color/color_text_secondary"
                     android:textSize="12sp" />
 
@@ -69,6 +72,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="Choose File"
+                    android:fontFamily="@font/poppins_regular"
                     app:icon="@drawable/ic_upload_two"
                     app:cornerRadius="8dp" />
 

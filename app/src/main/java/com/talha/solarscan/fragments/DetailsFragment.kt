@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.talha.solarscan.R
 import com.talha.solarscan.data.local.DatabaseHelper
 import com.talha.solarscan.data.local.SolarRecommendation
@@ -30,6 +32,8 @@ class DetailsFragment : Fragment() {
     private lateinit var textMonthlyProduction: TextView
     private lateinit var textCO2Reduction: TextView
     private lateinit var textPercentOffset: TextView
+
+    private lateinit var backButton: ImageButton
 
     private lateinit var dbHelper: DatabaseHelper
     private var billId: Long = -1
@@ -64,8 +68,10 @@ class DetailsFragment : Fragment() {
         textMonthlyProduction = view.findViewById(R.id.text_monthly_production)
         textCO2Reduction = view.findViewById(R.id.text_co2_reduction)
         textPercentOffset = view.findViewById(R.id.text_percent_offset)
+        backButton = view.findViewById(R.id.back_button)
 
         loadRecommendation()
+        backButtonClick()
     }
 
     private fun loadRecommendation() {
@@ -87,6 +93,12 @@ class DetailsFragment : Fragment() {
         } else {
             // Bill ID provided, fetch its recommendation
             fetchAndDisplayRecommendation(0) // units will be fetched if needed
+        }
+    }
+
+    private fun backButtonClick(){
+        backButton.setOnClickListener(){
+            findNavController().navigate(R.id.action_details_to_dashboard)
         }
     }
 

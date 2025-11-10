@@ -74,4 +74,7 @@ dependencies {
 
     // Gson (for JSON parsing)
     implementation("com.google.code.gson:gson:2.10.1")
+
+    // Splash Screen Activity
+    implementation("androidx.core:core-splashscreen:1.2.0")
 }

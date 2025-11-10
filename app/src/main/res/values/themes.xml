@@ -46,7 +46,37 @@
         <!-- Navigation bar (light mode) -->
         <item name="android:navigationBarColor">@color/md_theme_light_background</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o">true</item>
+
+        <!-- Splash Screen (Android 12+) -->
+        <item name="android:windowSplashScreenBackground">@color/md_theme_light_primary</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_logo</item>
+        <item name="android:windowSplashScreenAnimationDuration">1000</item>
+        <item name="postSplashScreenTheme">@style/Theme.SolarScan</item>
     </style>
 
     <style name="Theme.SolarScan" parent="Base.Theme.SolarScan" />
+
+    <!-- Text Styles -->
+    <style name="TextAppearance.App.Heading" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="fontFamily">@font/poppins_semibold</item>
+        <item name="android:textColor">@color/color_text</item>
+        <item name="android:textSize">26sp</item>
+    </style>
+
+    <style name="TextAppearance.App.Body" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/poppins_medium</item>
+        <item name="android:textColor">@color/color_text</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TextAppearance.AppCompat.Body1." parent="TextAppearance.Material3.BodySmall">
+        <item name="fontFamily">@font/poppins_regular</item>
+        <item name="android:textColor">@color/color_text</item>
+    </style>
+
+    <style name="TextAppearance.App.Tab" parent="TextAppearance.Material3.TitleSmall">
+        <item name="fontFamily">@font/poppins_medium</item>
+        <item name="android:textColor">@color/color_text</item>
+    </style>
+
 </resources>

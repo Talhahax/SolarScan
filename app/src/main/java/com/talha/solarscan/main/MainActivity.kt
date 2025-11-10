@@ -1,8 +1,11 @@
 package com.talha.solarscan.main
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -15,7 +18,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomNav: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+        var isReady = false
+        splashScreen.setKeepOnScreenCondition { !isReady }
+
+        // Simulate loading
+        Handler(Looper.getMainLooper()).postDelayed({
+            isReady = true
+        }, 2000)
         setContentView(R.layout.activity_main)
 
         setupNavigation()

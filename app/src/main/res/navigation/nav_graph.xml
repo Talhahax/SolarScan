@@ -42,6 +42,14 @@
         android:label="Details"
         tools:layout="@layout/fragment_details">
 
+        <action
+            android:id="@+id/action_details_to_dashboard"
+            app:destination="@id/dashboardFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
+
         <!-- Optional: Add argument for bill_id -->
         <argument
             android:name="bill_id"
