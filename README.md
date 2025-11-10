@@ -72,7 +72,7 @@ app/src/main/java/com/talha/solarscan/
 
 Backend API
 
-- Base URL: configured in `ApiClient` (`https://ss-sand-three.vercel.app/`)
+- Base URL: configured in `ApiClient.BASE_URL` (set your backend endpoint)
 - Endpoint: `POST /api/analyze-bill`
 - Request:
   - `text` (string): raw bill text
@@ -98,9 +98,9 @@ Getting Started
 
 Configuration
 
-- API Base URL: edit `ApiClient.BASE_URL` if your backend endpoint differs.
+- API Base URL: Set your backend endpoint in `ApiClient.BASE_URL` before building. For production, consider using environment variables or build configuration files.
 - Splash Screen: Configured in `themes.xml` with Material Design 3 colors and logo drawable.
-- Logging: OkHttp logging interceptor is enabled (BODY). Adjust for release as needed.
+- Logging: OkHttp logging interceptor is enabled (BODY). Adjust for release as needed (disable BODY logs in production).
 - ProGuard: see `app/proguard-rules.pro` for release configurations.
 - Themes: Material Design 3 colors defined in `colors.xml` with light and dark variants.
 
