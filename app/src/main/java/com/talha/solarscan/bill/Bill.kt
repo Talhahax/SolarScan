@@ -1,4 +1,4 @@
-package com.talha.solarscan.data.local
+package com.talha.solarscan.bill
 
 data class Bill(
     val id: Long = 0,

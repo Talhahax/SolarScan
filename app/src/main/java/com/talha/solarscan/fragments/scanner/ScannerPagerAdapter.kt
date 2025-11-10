@@ -2,7 +2,6 @@ package com.talha.solarscan.fragments.scanner
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.talha.solarscan.fragments.UploadPageFragment
 
 class ScannerPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 

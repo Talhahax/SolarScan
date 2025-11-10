@@ -1,14 +1,13 @@
-package com.talha.solarscan.repository
+package com.talha.solarscan.bill
 
 import android.content.Context
-import com.talha.solarscan.data.local.Bill
 import com.talha.solarscan.data.local.DatabaseHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class BillRepository(context: Context) {
 
-    private val dbHelper = DatabaseHelper.getInstance(context)
+    private val dbHelper = DatabaseHelper.Companion.getInstance(context)
 
     suspend fun insertBill(bill: Bill): Long = withContext(Dispatchers.IO) {
         dbHelper.insertBill(bill)

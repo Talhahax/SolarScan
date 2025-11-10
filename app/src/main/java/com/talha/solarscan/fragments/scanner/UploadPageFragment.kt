@@ -1,15 +1,17 @@
-package com.talha.solarscan.fragments
+package com.talha.solarscan.fragments.scanner
 
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -18,9 +20,9 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.talha.solarscan.R
-import com.talha.solarscan.data.local.Bill
-import com.talha.solarscan.utils.BillParser
-import com.talha.solarscan.viewmodel.BillViewModel
+import com.talha.solarscan.bill.Bill
+import com.talha.solarscan.bill.BillParser
+import com.talha.solarscan.bill.BillViewModel
 import com.talha.solarscan.viewmodel.SolarViewModel
 
 class UploadPageFragment : Fragment() {
@@ -32,6 +34,8 @@ class UploadPageFragment : Fragment() {
     private lateinit var buttonProcess: MaterialButton
     private lateinit var imagePreview: ImageView
     private lateinit var progressBar: ProgressBar
+
+    private lateinit var progressText: TextView
 
     private var selectedImageUri: Uri? = null
 
@@ -54,6 +58,7 @@ class UploadPageFragment : Fragment() {
         buttonProcess = view.findViewById(R.id.button_process)
         imagePreview = view.findViewById(R.id.image_preview)
         progressBar = view.findViewById(R.id.progress_bar)
+        progressText = view.findViewById(R.id.text_loading)
 
         buttonChooseFile.setOnClickListener {
             openImagePicker()
@@ -141,7 +146,12 @@ class UploadPageFragment : Fragment() {
     }
 
     private fun parseBillAndSave(text: String) {
+        Log.d("UploadPageFragment", "========== PARSE AND SAVE ==========")
         val parsed = BillParser.parse(text)
+
+        Log.d("UploadPageFragment", "Parsed units: ${parsed.units}")
+        Log.d("UploadPageFragment", "Parsed cost: ${parsed.cost}")
+        Log.d("UploadPageFragment", "Parsed date: ${parsed.billingDate}")
 
         if (parsed.units != null && parsed.cost != null) {
             val bill = Bill(
@@ -149,7 +159,17 @@ class UploadPageFragment : Fragment() {
                 cost = parsed.cost,
                 billingDate = parsed.billingDate ?: "Unknown"
             )
+            Log.d("UploadPageFragment", "✅ Creating bill object: $bill")
+            Log.d("UploadPageFragment", "Calling billViewModel.saveBill()...")
             billViewModel.saveBill(bill)
+            Log.d("UploadPageFragment", "saveBill() called successfully")
+        } else {
+            Log.e("UploadPageFragment", "❌ FAILED TO PARSE: units=${parsed.units}, cost=${parsed.cost}")
+            Toast.makeText(
+                context,
+                "Could not extract bill data. Units: ${parsed.units}, Cost: ${parsed.cost}",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -159,6 +179,7 @@ class UploadPageFragment : Fragment() {
 
     private fun showLoading(show: Boolean) {
         progressBar.visibility = if (show) View.VISIBLE else View.GONE
+        progressText.visibility = if (show) View.VISIBLE else View.GONE
         buttonProcess.isEnabled = !show
         buttonChooseFile.isEnabled = !show
     }

@@ -22,9 +22,9 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.talha.solarscan.R
-import com.talha.solarscan.data.local.Bill
-import com.talha.solarscan.utils.BillParser
-import com.talha.solarscan.viewmodel.BillViewModel
+import com.talha.solarscan.bill.Bill
+import com.talha.solarscan.bill.BillParser
+import com.talha.solarscan.bill.BillViewModel
 import com.talha.solarscan.viewmodel.SolarViewModel
 import java.io.File
 import java.text.SimpleDateFormat
@@ -203,7 +203,12 @@ class ScanPageFragment : Fragment() {
     }
 
     private fun parseBillAndSave(text: String) {
+        Log.d(TAG, "========== PARSE AND SAVE ==========")
         val parsed = BillParser.parse(text)
+
+        Log.d(TAG, "Parsed units: ${parsed.units}")
+        Log.d(TAG, "Parsed cost: ${parsed.cost}")
+        Log.d(TAG, "Parsed date: ${parsed.billingDate}")
 
         if (parsed.units != null && parsed.cost != null) {
             val bill = Bill(
@@ -211,7 +216,17 @@ class ScanPageFragment : Fragment() {
                 cost = parsed.cost,
                 billingDate = parsed.billingDate ?: "Unknown"
             )
+            Log.d(TAG, "✅ Creating bill object: $bill")
+            Log.d(TAG, "Calling billViewModel.saveBill()...")
             billViewModel.saveBill(bill)
+            Log.d(TAG, "saveBill() called successfully")
+        } else {
+            Log.e(TAG, "❌ FAILED TO PARSE: units=${parsed.units}, cost=${parsed.cost}")
+            Toast.makeText(
+                context,
+                "Could not extract bill data. Units: ${parsed.units}, Cost: ${parsed.cost}",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 

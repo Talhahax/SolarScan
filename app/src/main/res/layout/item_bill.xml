@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_bill"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Units Consumed -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Units Consumed:"
+                android:textColor="@color/color_text_secondary" />
+
+            <TextView
+                android:id="@+id/text_units"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/color_text"
+                tools:text="450 units" />
+        </LinearLayout>
+
+        <!-- Bill Amount -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Bill Amount:"
+                android:textColor="@color/color_text_secondary"/>
+
+            <TextView
+                android:id="@+id/text_cost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/color_text"
+                tools:text="Rs. 9,000" />
+        </LinearLayout>
+
+        <!-- Billing Date -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Billing Date:"
+                android:textColor="@color/color_text_secondary"/>
+
+            <TextView
+                android:id="@+id/text_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/color_text"
+                tools:text="Oct 2025" />
+        </LinearLayout>
+
+        <!-- View Details Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_view_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="View Solar Recommendation"
+            app:cornerRadius="8dp"
+            android:textColor="@color/white_text"
+            android:backgroundTint="@color/md_theme_light_secondary"/>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary (Green - Darker for dark mode) -->
+    <color name="md_theme_dark_primary">#34D399</color>
+    <color name="md_theme_dark_onPrimary">#064E3B</color>
+    <color name="md_theme_dark_primaryContainer">#065F46</color>
+    <color name="md_theme_dark_onPrimaryContainer">#D1FAE5</color>
+
+    <color name="color_text">#FFFFFFFF</color>
+    <color name="color_text_secondary">#BBBBBB</color>
+
+    <color name="black">#FFFFFFFF</color>
+    <color name="white">#FF000000</color>
+    <color name="white_text">#FFFFFFFF</color>
+
+    <!-- Secondary (Orange - Softer for dark mode) -->
+    <color name="md_theme_dark_secondary">#FB923C</color>
+    <color name="md_theme_dark_onSecondary">#7C2D12</color>
+    <color name="md_theme_dark_secondaryContainer">#9A3412</color>
+    <color name="md_theme_dark_onSecondaryContainer">#FFEDD5</color>
+
+    <!-- Tertiary (Lime - Softer for dark mode) -->
+    <color name="md_theme_dark_tertiary">#A3E635</color>
+    <color name="md_theme_dark_onTertiary">#1A2E05</color>
+    <color name="md_theme_dark_tertiaryContainer">#365314</color>
+    <color name="md_theme_dark_onTertiaryContainer">#ECFCCB</color>
+
+    <!-- Error -->
+    <color name="md_theme_dark_error">#F87171</color>
+    <color name="md_theme_dark_onError">#7F1D1D</color>
+    <color name="md_theme_dark_errorContainer">#991B1B</color>
+    <color name="md_theme_dark_onErrorContainer">#FEE2E2</color>
+
+    <!-- Background & Surface -->
+    <color name="md_theme_dark_background">#0F172A</color>
+    <color name="md_theme_dark_onBackground">#F1F5F9</color>
+    <color name="md_theme_dark_surface">#1E293B</color>
+    <color name="md_theme_dark_onSurface">#F1F5F9</color>
+    <color name="md_theme_dark_surfaceVariant">#334155</color>
+    <color name="md_theme_dark_onSurfaceVariant">#CBD5E1</color>
+
+    <!-- Outline -->
+    <color name="md_theme_dark_outline">#475569</color>
+    <color name="md_theme_dark_outlineVariant">#334155</color>
+</resources>

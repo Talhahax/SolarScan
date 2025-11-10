@@ -53,12 +53,14 @@ class ScannerFragment : Fragment() {
     }
 
     private fun observeNavigation() {
-        solarViewModel.recommendationLiveData.observe(viewLifecycleOwner, Observer { response ->
-            // Check if there is a valid, unhandled recommendation
-            if (response != null && response.success) {
-                // Navigate to the details fragment
-                findNavController().navigate(R.id.detailsFragment)
-
+        // Observe the navigation EVENT (single-use)
+        solarViewModel.navigationEvent.observe(viewLifecycleOwner, Observer { event ->
+            // getContentIfNotHandled() returns null if already handled
+            event.getContentIfNotHandled()?.let { response ->
+                if (response.success) {
+                    // Navigate to the details fragment using the action
+                    findNavController().navigate(R.id.action_scanner_to_details)
+                }
             }
         })
     }

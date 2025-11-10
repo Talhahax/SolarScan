@@ -8,8 +8,4 @@
         android:id="@+id/scannerFragment"
         android:icon="@drawable/ic_camera"
         android:title="Scanner" />
-    <item
-        android:id="@+id/detailsFragment"
-        android:icon="@drawable/ic_solar"
-        android:title="Solar" />
 </menu>

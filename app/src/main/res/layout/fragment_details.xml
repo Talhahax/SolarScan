@@ -21,7 +21,7 @@
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginTop="24dp"
-            android:textColor="@color/black"
+            android:textColor="@color/color_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -55,8 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="#E8F5E9">
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -68,7 +67,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Your Category"
-                        android:textColor="#666666"
+                        android:textColor="@color/color_text_secondary"
                         android:textSize="14sp" />
 
                     <TextView
@@ -76,7 +75,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:textColor="#2E7D32"
+                        android:textColor="@color/green_text"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         tools:text="Average Consumer" />
@@ -93,7 +92,7 @@
                 android:text="Recommended System"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/black" />
+                android:textColor="@color/color_text" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -120,14 +119,14 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Panel Size:"
-                            android:textColor="#666666" />
+                            android:textColor="@color/color_text_secondary" />
 
                         <TextView
                             android:id="@+id/text_panel_size"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textStyle="bold"
-                            android:textColor="@color/black"
+                            android:textColor="@color/color_text"
                             tools:text="3.5 kW" />
                     </LinearLayout>
 
@@ -148,14 +147,14 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Installation Cost:"
-                            android:textColor="#666666" />
+                            android:textColor="@color/color_text_secondary" />
 
                         <TextView
                             android:id="@+id/text_installation_cost"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textStyle="bold"
-                            android:textColor="@color/black"
+                            android:textColor="@color/color_text"
                             tools:text="Rs. 350,000" />
                     </LinearLayout>
 
@@ -176,14 +175,14 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Monthly Saving:"
-                            android:textColor="#666666" />
+                            android:textColor="@color/color_text_secondary" />
 
                         <TextView
                             android:id="@+id/text_monthly_saving"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textStyle="bold"
-                            android:textColor="#4CAF50"
+                            android:textColor="@color/green_text"
                             tools:text="Rs. 9,000" />
                     </LinearLayout>
 
@@ -204,14 +203,14 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Payback Period:"
-                            android:textColor="#666666" />
+                            android:textColor="@color/color_text_secondary" />
 
                         <TextView
                             android:id="@+id/text_payback_period"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textStyle="bold"
-                            android:textColor="@color/black"
+                            android:textColor="@color/color_text"
                             tools:text="3.2 years" />
                     </LinearLayout>
                     <View
@@ -230,14 +229,14 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Monthly Production:"
-                            android:textColor="#666666" />
+                            android:textColor="@color/color_text_secondary" />
 
                         <TextView
                             android:id="@+id/text_monthly_production"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textStyle="bold"
-                            android:textColor="@color/black"
+                            android:textColor="@color/color_text"
                             tools:text="420 kWh" />
                     </LinearLayout>
 
@@ -257,14 +256,14 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="CO2 Reduction:"
-                            android:textColor="#666666" />
+                            android:textColor="@color/color_text_secondary" />
 
                         <TextView
                             android:id="@+id/text_co2_reduction"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textStyle="bold"
-                            android:textColor="@color/black"
+                            android:textColor="@color/color_text"
                             tools:text="0.3 t" />
                     </LinearLayout>
 
@@ -285,14 +284,14 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Percent Offset:"
-                            android:textColor="#666666" />
+                            android:textColor="@color/color_text_secondary" />
 
                         <TextView
                             android:id="@+id/text_percent_offset"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textStyle="bold"
-                            android:textColor="@color/black"
+                            android:textColor="@color/color_text"
                             tools:text="95%" />
                     </LinearLayout>
 
@@ -308,7 +307,7 @@
                 android:text="Energy Saving Tips"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/black" />
+                android:textColor="@color/color_text" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -322,7 +321,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:textColor="@color/black"
+                    android:textColor="@color/color_text"
                     android:lineSpacingExtra="4dp"
                     tools:text="• Consider solar panels
 • Switch to LED bulbs

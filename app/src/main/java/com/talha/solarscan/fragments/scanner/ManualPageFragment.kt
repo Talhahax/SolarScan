@@ -11,8 +11,8 @@ import androidx.fragment.app.activityViewModels
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.talha.solarscan.R
-import com.talha.solarscan.data.local.Bill
-import com.talha.solarscan.viewmodel.BillViewModel
+import com.talha.solarscan.bill.Bill
+import com.talha.solarscan.bill.BillViewModel
 import com.talha.solarscan.viewmodel.SolarViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -56,14 +56,14 @@ class ManualPageFragment : Fragment() {
         solarViewModel.recommendationLiveData.observe(viewLifecycleOwner) { response ->
             if (response != null && response.success) {
                 showLoading(false)
-                Toast.makeText(context, "✅ Analysis complete!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Analysis complete!", Toast.LENGTH_SHORT).show()
             }
         }
 
         solarViewModel.errorLiveData.observe(viewLifecycleOwner) { error ->
             if (error != null) {
                 showLoading(false)
-                Toast.makeText(context, "❌ Error: $error", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Error: $error", Toast.LENGTH_LONG).show()
             }
         }
     }

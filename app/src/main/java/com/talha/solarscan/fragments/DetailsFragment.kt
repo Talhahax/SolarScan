@@ -117,9 +117,21 @@ class DetailsFragment : Fragment() {
                 Toast.LENGTH_LONG
             ).show()
         }
+
     }
 
     private fun formatNumber(number: Int): String {
         return String.format("%,d", number)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        android.util.Log.d("DetailsFragment", "onResume called - Fragment is visible")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Clear the recommendation data when leaving details screen
+        solarViewModel.clearRecommendation()
     }
 }
